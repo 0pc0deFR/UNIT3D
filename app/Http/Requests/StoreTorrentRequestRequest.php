@@ -158,7 +158,7 @@ class StoreTorrentRequestRequest extends FormRequest
             ],
             'type_id' => [
                 'nullable',
-                'exists:types,id',
+                Rule::exists('category_type', 'type_id')->where('category_id', $category->id),
             ],
             'resolution_id' => [
                 'nullable',

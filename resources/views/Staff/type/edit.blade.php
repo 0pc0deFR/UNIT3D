@@ -66,6 +66,30 @@
                     </label>
                 </p>
                 <p class="form__group">
+                    @php
+                        $selectedCategoryIds = old('category_ids', $type->categories->pluck('id')->all());
+                    @endphp
+                    <select
+                        id="category_ids"
+                        class="form__select"
+                        name="category_ids[]"
+                        multiple
+                        required
+                    >
+                        @foreach ($categories as $category)
+                            <option
+                                value="{{ $category->id }}"
+                                @selected(in_array($category->id, $selectedCategoryIds, true))
+                            >
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <label class="form__label form__label--floating" for="category_ids">
+                        {{ __('torrent.category') }}
+                    </label>
+                </p>
+                <p class="form__group">
                     <button class="form__button form__button--filled">
                         {{ __('common.submit') }}
                     </button>

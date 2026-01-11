@@ -19,6 +19,7 @@ namespace App\Http\Controllers\Staff;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Staff\StoreTypeRequest;
 use App\Http\Requests\Staff\UpdateTypeRequest;
+use App\Models\Category;
 use App\Models\Type;
 use Exception;
 
@@ -42,7 +43,9 @@ class TypeController extends Controller
      */
     public function create(): \Illuminate\Contracts\View\Factory|\Illuminate\View\View
     {
-        return view('Staff.type.create');
+        return view('Staff.type.create', [
+            'categories' => Category::orderBy('position')->get(),
+        ]);
     }
 
     /**
@@ -50,7 +53,8 @@ class TypeController extends Controller
      */
     public function store(StoreTypeRequest $request): \Illuminate\Http\RedirectResponse
     {
-        Type::create($request->validated());
+        $type = Type::create($request->safe()->only(['name', 'position']));
+        $type->categories()->sync($request->input('category_ids', []));
 
         return to_route('staff.types.index')
             ->with('success', 'Type successfully added');
@@ -61,8 +65,11 @@ class TypeController extends Controller
      */
     public function edit(Type $type): \Illuminate\Contracts\View\Factory|\Illuminate\View\View
     {
+        $type->load('categories');
+
         return view('Staff.type.edit', [
-            'type' => $type,
+            'type'       => $type,
+            'categories' => Category::orderBy('position')->get(),
         ]);
     }
 
@@ -71,7 +78,8 @@ class TypeController extends Controller
      */
     public function update(UpdateTypeRequest $request, Type $type): \Illuminate\Http\RedirectResponse
     {
-        $type->update($request->validated());
+        $type->update($request->safe()->only(['name', 'position']));
+        $type->categories()->sync($request->input('category_ids', []));
 
         return to_route('staff.types.index')
             ->with('success', 'Type successfully modified');
