@@ -42,6 +42,15 @@ class UpdateTypeRequest extends FormRequest
             'position' => [
                 'required',
             ],
+            'category_ids' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+            'category_ids.*' => [
+                'integer',
+                'exists:categories,id',
+            ],
         ];
     }
 }

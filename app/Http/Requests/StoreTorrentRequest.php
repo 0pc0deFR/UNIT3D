@@ -145,7 +145,7 @@ class StoreTorrentRequest extends FormRequest
             ],
             'type_id' => [
                 'required',
-                'exists:types,id',
+                Rule::exists('category_type', 'type_id')->where('category_id', $category->id),
             ],
             'resolution_id' => [
                 Rule::when($category->movie_meta || $category->tv_meta, 'required'),

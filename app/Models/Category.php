@@ -19,6 +19,7 @@ namespace App\Models;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use AllowDynamicProperties;
 
@@ -91,5 +92,15 @@ final class Category extends Model
     public function requests(): HasMany
     {
         return $this->hasMany(TorrentRequest::class);
+    }
+
+    /**
+     * Get the types associated with the category.
+     *
+     * @return BelongsToMany<Type, $this>
+     */
+    public function types(): BelongsToMany
+    {
+        return $this->belongsToMany(Type::class);
     }
 }
